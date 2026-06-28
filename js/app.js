@@ -308,87 +308,10 @@ $('shareBtn').onclick = function() {
   else { navigator.clipboard.writeText(window.location.href).then(function() { alert('Menü linki kopyalandı!'); }); }
 };
 
-// ===== PAYMENT =====
-function openPayment() {
-  var total = 0;
-  for (var i = 0; i < cart.length; i++) total += cart[i].price * cart[i].qty;
-  var tax = total * 0.1;
-  var grand = total + tax;
-
-  // Cart paneli kapat
-  $('cartPanel').classList.remove('open');
-  $('cartOverlay').classList.remove('show');
-
-  // Özeti doldur
-  var pHtml = '';
-  for (var j = 0; j < cart.length; j++) {
-    var c = cart[j];
-    pHtml += '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">' +
-      '<span>' + c.name + ' x' + c.qty + '</span>' +
-      '<span style="font-weight:600">' + (c.price * c.qty).toFixed(0) + '₺</span></div>';
-  }
-  $('paymentItems').innerHTML = pHtml;
-  $('paymentTotalAmount').textContent = grand.toFixed(0) + '₺';
-
-  // Modalı aç (direkt style ile)
-  $('paymentModal').style.display = 'flex';
-  $('paymentOverlay').style.display = 'block';
-
-  // Butonu hazırla
-  $('payBtn').disabled = false;
-  $('payBtnText').textContent = 'Ödemeyi Tamamla';
-  $('paySpinner').classList.add('hidden');
-}
-
-function closePay() {
-  $('paymentModal').style.display = 'none';
-  $('paymentOverlay').style.display = 'none';
-}
-
-$('checkoutBtn').onclick = openPayment;
-$('closePayment').onclick = closePay;
-$('paymentOverlay').onclick = closePay;
-
-// Kart format
-$('cardNumber').oninput = function() {
-  var v = this.value.replace(/\D/g, '').substring(0, 16);
-  v = v.replace(/(.{4})/g, '$1 ').trim();
-  this.value = v;
-};
-$('cardExpiry').oninput = function() {
-  var v = this.value.replace(/\D/g, '').substring(0, 4);
-  if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2);
-  this.value = v;
-};
-
-// Payment submit
-$('paymentForm').onsubmit = function(e) {
-  e.preventDefault();
-  $('payBtn').disabled = true;
-  $('payBtnText').textContent = 'Ödeniyor...';
-  $('paySpinner').classList.remove('hidden');
-
-  setTimeout(function() {
-    closePay();
-    orderCounter++;
-    var itemsCopy = [];
-    for (var i = 0; i < cart.length; i++) itemsCopy.push({ name: cart[i].name, qty: cart[i].qty, price: cart[i].price });
-    var totalAmount = 0;
-    for (var k = 0; k < cart.length; k++) totalAmount += cart[k].price * cart[k].qty;
-    var order = { id: orderCounter, items: itemsCopy, total: totalAmount * 1.1, status: 'preparing', date: new Date().toLocaleString('tr-TR') };
-    orders.unshift(order);
-    try { localStorage.setItem('orders', JSON.stringify(orders)); } catch(e) {}
-    cart = [];
-    updCart();
-    $('orderNumber').textContent = '#' + String(orderCounter).padStart(3, '0');
-    $('successModal').style.display = 'flex';
-  }, 2000);
-};
-
-// Success close
-$('successCloseBtn').onclick = function() {
-  $('successModal').style.display = 'none';
-  renderOrders();
+// ===== PAYMENT (ayrı sayfa) =====
+$('checkoutBtn').onclick = function() {
+  try { localStorage.setItem('paymentCart', JSON.stringify(cart)); } catch(e) {}
+  window.location.href = 'payment.html';
 };
 
 // Orders

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>Ödeme - Cafe Lezzet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--bg); padding: 0; margin: 0; min-height: 100vh; }
+    .pay-header {
+      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      padding: 16px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .pay-header h1 { font-family: var(--font-display); font-size: 20px; flex: 1; }
+    .pay-body { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
+    .pay-section { background: var(--bg-card); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .pay-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .pay-section h2 i { color: var(--primary); }
+    .pay-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .pay-item:last-child { border-bottom: none; }
+    .pay-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; padding-top: 12px; margin-top: 8px; border-top: 2px solid var(--primary); }
+    .pay-total-row span:last-child { color: var(--primary); }
+    .pay-field { margin-bottom: 16px; }
+    .pay-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .pay-field input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; background: var(--bg); box-sizing: border-box; }
+    .pay-field input:focus { border-color: var(--primary); outline: none; }
+    .pay-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pay-submit {
+      width: 100%; padding: 16px; border-radius: var(--radius-sm);
+      background: #22C55E; color: #fff; font-size: 16px; font-weight: 600;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .pay-submit:hover { background: #16A34A; }
+    .pay-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .pay-back { color: var(--text-light); text-decoration: none; font-size: 20px; display: flex; align-items: center; }
+    .success-screen {
+      display: none; text-align: center; padding: 60px 20px;
+    }
+    .success-screen.show { display: block; }
+    .payment-form { display: block; }
+    .payment-form.hide { display: none; }
+    .success-check {
+      width: 72px; height: 72px; margin: 0 auto 20px;
+      background: #22C55E; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; color: #fff;
+    }
+    .success-screen h2 { font-family: var(--font-display); font-size: 28px; margin-bottom: 8px; }
+    .success-screen p { color: var(--text-light); margin-bottom: 24px; }
+    .success-btn {
+      display: inline-block; padding: 14px 40px; border-radius: 50px;
+      background: var(--primary); color: #fff; font-size: 14px; font-weight: 600;
+      text-decoration: none;
+    }
+    .empty-cart-screen { text-align: center; padding: 80px 20px; }
+    .empty-cart-screen i { font-size: 56px; color: var(--border); margin-bottom: 16px; }
+    .empty-cart-screen h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; }
+    .empty-cart-screen p { color: var(--text-light); margin-bottom: 24px; }
+    .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle}
+    .spinner.hide{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+  <div class="pay-header">
+    <a href="index.html" class="pay-back"><i class="fas fa-arrow-left"></i></a>
+    <h1>Ödeme</h1>
+  </div>
+
+  <div class="pay-body" id="payBody">
+    <!-- Empty cart -->
+    <div class="empty-cart-screen" id="emptyCart">
+      <i class="fas fa-shopping-bag"></i>
+      <h3>Sepetiniz boş</h3>
+      <p>Ödeme yapmak için önce menüden ürün ekleyin.</p>
+      <a href="index.html" class="success-btn">Menüye Dön</a>
+    </div>
+
+    <!-- Payment form -->
+    <div id="paymentFormDiv">
+      <div class="pay-section">
+        <h2><i class="fas fa-receipt"></i> Sipariş Özeti</h2>
+        <div id="orderItems"></div>
+        <div class="pay-total-row">
+          <span>Toplam</span>
+          <span id="totalAmount">0₺</span>
+        </div>
+      </div>
+
+      <div class="pay-section">
+        <h2><i class="fas fa-credit-card"></i> Kart Bilgileri</h2>
+        <div class="pay-field">
+          <label>Kart Üzerindeki İsim</label>
+          <input type="text" id="cardName" placeholder="Ad Soyad" required>
+        </div>
+        <div class="pay-field">
+          <label>Kart Numarası</label>
+          <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+        </div>
+        <div class="pay-row">
+          <div class="pay-field">
+            <label>Son Kullanma</label>
+            <input type="text" id="cardExpiry" placeholder="AA/YY" maxlength="5" required>
+          </div>
+          <div class="pay-field">
+            <label>CVV</label>
+            <input type="text" id="cardCvv" placeholder="***" maxlength="4" required>
+          </div>
+        </div>
+      </div>
+
+      <button class="pay-submit" id="payBtn">
+        <span id="payBtnText">Ödemeyi Tamamla</span>
+        <span class="spinner hide" id="paySpinner"></span>
+      </button>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-check"><i class="fas fa-check"></i></div>
+      <h2>Siparişiniz Alındı!</h2>
+      <p>Siparişiniz başarıyla oluşturuldu. Hazırlanmaya başlanıyor!</p>
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:24px">
+        <div style="background:var(--bg);padding:12px 20px;border-radius:10px;text-align:center">
+          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;margin-bottom:4px">Sipariş No</div>
+          <strong style="font-size:16px;color:var(--primary)" id="orderNum">#001</strong>
+        </div>
+        <div style="background:var(--bg);padding:12px 20px;border-radius:10px;text-align:center">
+          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;margin-bottom:4px">Tahmini Süre</div>
+          <strong style="font-size:16px;color:var(--primary)">20-30 dk</strong>
+        </div>
+      </div>
+      <a href="index.html" class="success-btn">Menüye Dön</a>
+    </div>
+  </div>
+
+  <script>
+    // Load cart from localStorage
+    var cart = [];
+    try { var saved = localStorage.getItem('paymentCart'); if (saved) cart = JSON.parse(saved); } catch(e) {}
+
+    var emptyCart = document.getElementById('emptyCart');
+    var paymentForm = document.getElementById('paymentFormDiv');
+    var successScreen = document.getElementById('successScreen');
+    var orderItems = document.getElementById('orderItems');
+    var totalAmount = document.getElementById('totalAmount');
+    var payBtn = document.getElementById('payBtn');
+    var payBtnText = document.getElementById('payBtnText');
+    var paySpinner = document.getElementById('paySpinner');
+    var orderNum = document.getElementById('orderNum');
+
+    if (!cart || cart.length === 0) {
+      emptyCart.style.display = 'block';
+      paymentForm.style.display = 'none';
+    } else {
+      emptyCart.style.display = 'none';
+      paymentForm.style.display = 'block';
+
+      // Render items
+      var itemsHtml = '';
+      var total = 0;
+      for (var i = 0; i < cart.length; i++) {
+        var c = cart[i];
+        itemsHtml += '<div class="pay-item"><span>' + c.name + ' x' + c.qty + '</span><span style="font-weight:600">' + (c.price * c.qty).toFixed(0) + '₺</span></div>';
+        total += c.price * c.qty;
+      }
+      orderItems.innerHTML = itemsHtml;
+      totalAmount.textContent = (total * 1.1).toFixed(0) + '₺';
+    }
+
+    // Card formatting
+    document.getElementById('cardNumber').oninput = function() {
+      var v = this.value.replace(/\D/g, '').substring(0, 16);
+      v = v.replace(/(.{4})/g, '$1 ').trim();
+      this.value = v;
+    };
+    document.getElementById('cardExpiry').oninput = function() {
+      var v = this.value.replace(/\D/g, '').substring(0, 4);
+      if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2);
+      this.value = v;
+    };
+
+    // Submit
+    payBtn.onclick = function(e) {
+      e.preventDefault();
+
+      // Validate
+      var name = document.getElementById('cardName').value.trim();
+      var number = document.getElementById('cardNumber').value.replace(/\s/g, '');
+      var expiry = document.getElementById('cardExpiry').value;
+      var cvv = document.getElementById('cardCvv').value;
+
+      if (!name || number.length < 16 || expiry.length < 5 || cvv.length < 3) {
+        alert('Lütfen tüm kart bilgilerini eksiksiz doldurun.');
+        return;
+      }
+
+      payBtn.disabled = true;
+      payBtnText.textContent = 'Ödeniyor...';
+      paySpinner.classList.remove('hide');
+
+      setTimeout(function() {
+        // Save order
+        var orders = [];
+        try { var savedOrders = localStorage.getItem('orders'); if (savedOrders) orders = JSON.parse(savedOrders); } catch(e) {}
+        var orderId = orders.length + 1;
+        var totalVal = 0;
+        for (var i = 0; i < cart.length; i++) totalVal += cart[i].price * cart[i].qty;
+        orders.unshift({ id: orderId, items: JSON.parse(JSON.stringify(cart)), total: totalVal * 1.1, status: 'preparing', date: new Date().toLocaleString('tr-TR') });
+        try { localStorage.setItem('orders', JSON.stringify(orders)); } catch(e) {}
+        try { localStorage.removeItem('paymentCart'); } catch(e) {}
+
+        // Show success
+        paymentForm.style.display = 'none';
+        orderNum.textContent = '#' + String(orderId).padStart(3, '0');
+        successScreen.classList.add('show');
+      }, 2000);
+    };
+  </script>
+</body>
+</html>
