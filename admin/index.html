@@ -507,6 +507,9 @@ function saveSettings(s) {
   try { localStorage.setItem('adminSettings', JSON.stringify(s)); } catch(e) {}
 }
 
+// ===== HELPERS =====
+function $(id) { return document.getElementById(id); }
+
 // ===== LOGIN =====
 $('loginBtn').onclick = function() {
   var user = $('loginUser').value.trim();
