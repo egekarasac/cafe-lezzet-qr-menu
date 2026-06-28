@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cafe Lezzet | QR Menü</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loader">
+      <div class="loader-emoji">☕</div>
+      <p class="loader-text">Cafe Lezzet</p>
+      <p class="loader-sub">Menü hazırlanıyor...</p>
+    </div>
+  </div>
+
+  <div id="welcomePage" class="welcome-page">
+    <div class="welcome-bg">
+      <div class="welcome-pattern"></div>
+    </div>
+    <div class="welcome-content">
+      <div class="welcome-badge">☕ Cafe Lezzet</div>
+      <h1 class="welcome-title">Kahveye<br>Dair Her Şey</h1>
+      <p class="welcome-subtitle">Özel kahve çekirdeklerimizden hazırlanan lezzetleri keşfedin, sipariş verin.</p>
+      <button id="enterBtn" class="enter-btn">
+        <span>Menüye Göz At</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <div class="welcome-stats">
+        <div class="stat-item">
+          <span class="stat-num">40+</span>
+          <span class="stat-label">Çeşit</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">4.9</span>
+          <span class="stat-label">Puan</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">15dk</span>
+          <span class="stat-label">Hazırlama</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainApp" class="main-app">
+
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-left">
+          <button id="menuToggle" class="icon-btn"><i class="fas fa-bars"></i></button>
+          <div class="header-brand">
+            <span class="brand-icon">☕</span>
+            <div>
+              <h1 class="brand-name">Cafe Lezzet</h1>
+              <span class="brand-status">● Açık</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button id="cartBtn" class="icon-btn cart-btn">
+            <i class="fas fa-shopping-bag"></i>
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <span class="brand-icon">☕</span>
+        <h2>Cafe Lezzet</h2>
+        <button id="closeSidebar" class="icon-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="sidebar-body">
+        <a href="#" class="sidebar-link active" data-section="menu"><i class="fas fa-utensils"></i> Menü</a>
+        <a href="#" class="sidebar-link" data-section="orders"><i class="fas fa-clipboard-list"></i> Siparişlerim</a>
+        <a href="#" class="sidebar-link" data-section="qr"><i class="fas fa-qrcode"></i> QR Menü</a>
+        <a href="#" class="sidebar-link" data-section="info"><i class="fas fa-info-circle"></i> Bilgi</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-contact"><i class="fas fa-phone"></i><span>0532 123 45 67</span></div>
+        <div class="sidebar-contact"><i class="fas fa-map-marker-alt"></i><span>İstanbul, Türkiye</span></div>
+      </div>
+    </nav>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+
+      <section id="menuSection" class="section active">
+        <div class="section-header">
+          <h2>Menü</h2>
+          <p>Lezzetli dünyamızı keşfedin</p>
+        </div>
+
+        <div class="category-tabs">
+          <button class="cat-tab active" data-cat="all">
+            <i class="fas fa-th-large"></i><span>Tümü</span>
+          </button>
+          <button class="cat-tab" data-cat="yiyecek">
+            <i class="fas fa-utensils"></i><span>Yiyecek</span>
+          </button>
+          <button class="cat-tab" data-cat="sicak-kahve">
+            <i class="fas fa-mug-hot"></i><span>Sıcak Kahve</span>
+          </button>
+          <button class="cat-tab" data-cat="soguk-kahve">
+            <i class="fas fa-snowflake"></i><span>Soğuk Kahve</span>
+          </button>
+          <button class="cat-tab" data-cat="tatli">
+            <i class="fas fa-cake"></i><span>Tatlı</span>
+          </button>
+        </div>
+
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Menüde ara..." autocomplete="off">
+        </div>
+
+        <div id="menuGrid" class="menu-grid"></div>
+      </section>
+
+      <section id="ordersSection" class="section">
+        <div class="section-header"><h2>Siparişlerim</h2></div>
+        <div id="ordersList" class="orders-list">
+          <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>Henüz siparişiniz yok</h3>
+            <p>İlk siparişinizi vermek için menüye göz atın!</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="qrSection" class="section">
+        <div class="section-header">
+          <h2>QR Menü</h2>
+          <p>Masaya özel menü linkiniz</p>
+        </div>
+        <div class="qr-container">
+          <div class="qr-card">
+            <div class="qr-header">
+              <span class="brand-icon">☕</span>
+              <h3>Cafe Lezzet</h3>
+            </div>
+            <div id="qrcode" class="qr-code"></div>
+            <p class="qr-hint">Masanızdaki QR kodu okutarak menüye ulaşabilirsiniz</p>
+            <button id="shareBtn" class="share-btn"><i class="fas fa-share-alt"></i> Menüyü Paylaş</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="infoSection" class="section">
+        <div class="section-header"><h2>Bilgi</h2></div>
+        <div class="info-container">
+          <div class="info-hero">
+            <div class="info-hero-icon">☕</div>
+            <h2>Cafe Lezzet</h2>
+            <p>Özel kahve çekirdekleri, eşsiz lezzetler</p>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <i class="fas fa-clock"></i>
+              <h4>Çalışma Saatleri</h4>
+              <div class="info-hours">
+                <span>Paz - Cum: 08:00 - 23:00</span>
+                <span>Cmt - Paz: 09:00 - 00:00</span>
+              </div>
+            </div>
+            <div class="info-card">
+              <i class="fas fa-map-pin"></i>
+              <h4>Adres</h4>
+              <p>Bağdat Caddesi No:123<br>Kadıköy / İstanbul</p>
+            </div>
+            <div class="info-card">
+              <i class="fas fa-phone-alt"></i>
+              <h4>İletişim</h4>
+              <p>0532 123 45 67<br>info@cafelezzet.com</p>
+            </div>
+            <div class="info-card">
+              <i class="fas fa-truck"></i>
+              <h4>Teslimat</h4>
+              <p>Minimum sipariş: 100₺<br>Ücretsiz: 200₺ üzeri</p>
+            </div>
+          </div>
+          <div class="info-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.248!2d29.087!3d41.012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDAwJzQzLjIiTiAyOcKwMDUnMTMuMiJF!5e0!3m2!1str!2str!4v1" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="cartBar" class="cart-bar">
+      <div class="cart-bar-left">
+        <div class="cart-bar-icon">
+          <i class="fas fa-shopping-bag"></i>
+          <span id="cartBarCount" class="cart-bar-count">0</span>
+        </div>
+        <div class="cart-bar-info">
+          <span id="cartBarItems">Sepet boş</span>
+          <span id="cartBarTotal" class="cart-bar-total">0₺</span>
+        </div>
+      </div>
+      <button id="viewCartBtn" class="cart-bar-action">Sepeti Görüntüle</button>
+    </div>
+
+  </div>
+
+  <div id="cartPanel" class="cart-panel">
+    <div class="cart-panel-header">
+      <div class="cart-panel-title">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>Sepetiniz</h3>
+      </div>
+      <button id="closeCart" class="icon-btn"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cartItems" class="cart-panel-body">
+      <div class="empty-cart">
+        <i class="fas fa-shopping-bag"></i>
+        <h4>Sepetiniz boş</h4>
+        <p>Lezzetlerimizi keşfetmeye başlayın!</p>
+      </div>
+    </div>
+    <div id="cartFooter" class="cart-panel-footer">
+      <div class="cart-summary">
+        <div class="cart-summary-row"><span>Ara Toplam</span><span id="cartSubtotal">0₺</span></div>
+        <div class="cart-summary-row"><span>KDV (%10)</span><span id="cartTax">0₺</span></div>
+        <div class="cart-summary-row total"><span>Toplam</span><span id="cartTotal">0₺</span></div>
+      </div>
+      <button id="checkoutBtn" class="checkout-btn" disabled><i class="fas fa-lock"></i> Ödemeye Geç</button>
+    </div>
+  </div>
+  <div id="cartOverlay" class="cart-overlay"></div>
+
+  <div id="paymentModal" class="modal">
+    <div class="modal-content payment-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-credit-card"></i> Ödeme</h3>
+        <button id="closePayment" class="icon-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-methods">
+          <label class="payment-method active">
+            <input type="radio" name="payment" value="card" checked hidden>
+            <i class="fas fa-credit-card"></i><span>Kart</span>
+          </label>
+          <label class="payment-method">
+            <input type="radio" name="payment" value="apple" hidden>
+            <i class="fab fa-apple-pay"></i><span>Apple Pay</span>
+          </label>
+          <label class="payment-method">
+            <input type="radio" name="payment" value="paypal" hidden>
+            <i class="fab fa-paypal"></i><span>PayPal</span>
+          </label>
+        </div>
+        <form id="paymentForm" class="payment-form">
+          <div class="form-group">
+            <label>Kart Üzerindeki İsim</label>
+            <input type="text" id="cardName" placeholder="Ad Soyad" required>
+          </div>
+          <div class="form-group">
+            <label>Kart Numarası</label>
+            <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Son Kullanma</label>
+              <input type="text" id="cardExpiry" placeholder="AA/YY" maxlength="5" required>
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input type="text" id="cardCvv" placeholder="***" maxlength="4" required>
+            </div>
+          </div>
+          <div class="payment-order-summary">
+            <h4>Sipariş Özeti</h4>
+            <div id="paymentItems"></div>
+            <div class="payment-total"><span>Toplam</span><span id="paymentTotalAmount">0₺</span></div>
+          </div>
+          <button type="submit" id="payBtn" class="pay-btn">
+            <span id="payBtnText">Ödemeyi Tamamla</span>
+            <div id="paySpinner" class="spinner hidden"></div>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="paymentOverlay" class="modal-overlay"></div>
+
+  <div id="successModal" class="modal">
+    <div class="modal-content success-modal">
+      <div class="success-check"><i class="fas fa-check"></i></div>
+      <h2>Siparişiniz Alındı!</h2>
+      <p>Siparişiniz başarıyla oluşturuldu. Hazırlanmaya başlanıyor!</p>
+      <div class="success-details">
+        <div class="success-detail">
+          <span>Sipariş No</span>
+          <strong id="orderNumber">#001</strong>
+        </div>
+        <div class="success-detail">
+          <span>Tahmini Süre</span>
+          <strong>20-30 dk</strong>
+        </div>
+      </div>
+      <button id="successCloseBtn" class="success-btn">Menüye Dön</button>
+    </div>
+  </div>
+
+  <div id="itemModal" class="modal">
+    <div class="modal-content item-modal">
+      <button id="closeItemModal" class="icon-btn modal-close-btn"><i class="fas fa-times"></i></button>
+      <div id="itemModalContent" class="item-modal-content"></div>
+    </div>
+  </div>
+  <div id="itemModalOverlay" class="modal-overlay"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
