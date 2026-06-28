@@ -1,4 +1,11 @@
-const menuData = [
+// Masa no ve admin menüsü
+var tableNo = parseInt(new URL(window.location.href).searchParams.get('masa')) || 0;
+
+// Admin menüsünü dene
+var adminMenu = null;
+try { var ms = localStorage.getItem('menusync'); if (ms) adminMenu = JSON.parse(ms); } catch(e) {}
+
+const menuData = adminMenu || [
   {id:1,name:'Izgara Köfte',cat:'yiyecek',price:225,desc:'El yapımı köfteler, özel baharat karışımı ile ızgarada pişirilir.',emoji:'🥩',badge:'Çok Satan'},
   {id:2,name:'Mantı',cat:'yiyecek',price:195,desc:'El açması mantı, kıymalı harç ile doldurulur, sarımsaklı yoğurt ile servis edilir.',emoji:'🥟',badge:'Usta İşi'},
   {id:3,name:'Lahmacun',cat:'yiyecek',price:165,desc:'İncecik açılan hamur üzerine kıymalı harç, maydanoz ve limon ile servis.',emoji:'🫓',badge:null},
@@ -24,6 +31,15 @@ const menuData = [
   {id:23,name:'Tiramisu',cat:'tatli',price:205,desc:'Kahveye batırılmış kedidili, mascarpone kreması ve kakao.',emoji:'🍰',badge:'Popüler'},
   {id:24,name:'Cheesecake',cat:'tatli',price:225,desc:'New York usulü kremalı cheesecake, çilek sosu ile.',emoji:'🧁',badge:null},
 ];
+
+// Table banner
+if (tableNo > 0 && tableNo <= 10) {
+  var banner = document.getElementById('tableBanner');
+  if (banner) {
+    banner.style.display = 'block';
+    document.getElementById('tableBannerText').textContent = 'Masa #' + tableNo;
+  }
+}
 
 // State
 let cart = [];
